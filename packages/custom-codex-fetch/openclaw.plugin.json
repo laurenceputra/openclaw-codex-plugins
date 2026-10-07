@@ -1,0 +1,84 @@
+{
+  "id": "custom-codex-fetch",
+  "name": "Custom Codex Fetch",
+  "description": "Best-effort native page extraction fallback",
+  "contracts": {
+    "webFetchProviders": [
+      "custom-codex-fetch"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "agentDir",
+      "profileId",
+      "binaryPath"
+    ],
+    "properties": {
+      "agentDir": {
+        "type": "string"
+      },
+      "profileId": {
+        "type": "string"
+      },
+      "binaryPath": {
+        "type": "string"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 300000,
+        "default": 90000
+      },
+      "startupMs": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 60000,
+        "default": 15000
+      },
+      "cleanupMs": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 10000,
+        "default": 5000
+      },
+      "model": {
+        "type": "string",
+        "const": "gpt-6-sol",
+        "default": "gpt-6-sol"
+      },
+      "effort": {
+        "type": "string",
+        "const": "low",
+        "default": "low"
+      }
+    }
+  },
+  "uiHints": {
+    "agentDir": {
+      "label": "agentDir"
+    },
+    "profileId": {
+      "label": "profileId"
+    },
+    "binaryPath": {
+      "label": "binaryPath"
+    },
+    "timeoutMs": {
+      "label": "timeoutMs"
+    },
+    "startupMs": {
+      "label": "startupMs"
+    },
+    "cleanupMs": {
+      "label": "cleanupMs"
+    },
+    "model": {
+      "label": "model"
+    },
+    "effort": {
+      "label": "effort"
+    }
+  }
+}

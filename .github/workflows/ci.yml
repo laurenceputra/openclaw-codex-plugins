@@ -1,4 +1,4 @@
-name: Test and package search
+name: Test and package independent providers
 on: [push, pull_request]
 permissions:
   contents: read

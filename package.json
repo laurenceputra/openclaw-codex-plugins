@@ -2,11 +2,18 @@
   "name": "openclaw-codex-plugins",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/custom-codex-search"],
-  "engines": {"node": ">=24"},
+  "workspaces": [
+    "packages/custom-codex-search",
+    "packages/custom-codex-fetch"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "test": "npm test --workspace=custom-codex-search",
+    "test": "npm test --workspaces",
     "pack:search": "npm pack --workspace=custom-codex-search --pack-destination=.",
-    "check:pack": "node scripts/check-search-pack.mjs"
+    "check:pack": "node scripts/check-search-pack.mjs && node scripts/check-fetch-pack.mjs",
+    "pack:fetch": "npm pack --workspace=custom-codex-fetch --pack-destination=.",
+    "check:fetch:host": "node scripts/check-fetch-host.mjs"
   }
 }

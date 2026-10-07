@@ -34,3 +34,7 @@ This repository owns future durable package development. The original working so
 Plugins version independently. A future reviewed search release can use search-v0.2.0; no tag or publication is created by this setup. The fetch name is provisional until its bounded feasibility test and implementation are approved. No npm or ClawHub publication is configured.
 
 MIT license; the search package's existing copyright notice is preserved in its package license and the root license.
+
+## Native fetch fallback
+
+[custom-codex-fetch 0.1.0](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.

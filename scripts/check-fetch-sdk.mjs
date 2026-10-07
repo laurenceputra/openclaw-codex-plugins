@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+const dist=process.env.OPENCLAW_HOST_DIST ?? '/app/dist';
+const schemaDir=process.argv[2];if(!schemaDir)throw Error('Pass Codex 0.158.0 app-server generate-json-schema output directory');
+assert.equal(JSON.parse(await readFile(dist+'/../package.json')).version,'2026.9.8');
+const auth=await import(pathToFileURL(dist+'/plugin-sdk/provider-auth-runtime.js'));
+const identity=await import(pathToFileURL(dist+'/plugin-sdk/provider-auth.js'));
+const guard=await import(pathToFileURL(dist+'/plugin-sdk/ssrf-runtime.js'));
+assert.equal(typeof auth.resolveApiKeyForProvider,'function');assert.equal(typeof identity.resolveOpenAICodexAuthIdentity,'function');assert.equal(typeof guard.resolvePinnedHostnameWithPolicy,'function');
+const schema=JSON.parse(await readFile(schemaDir+'/v2/TurnStartParams.json'));
+for(const field of ['outputSchema','threadId','model','effort','sandboxPolicy','input'])assert(field in schema.properties,field);
+const manifest=JSON.parse(await readFile(new URL('../packages/custom-codex-fetch/openclaw.plugin.json',import.meta.url)));
+assert.deepEqual(manifest.contracts.webFetchProviders,['custom-codex-fetch']);assert.equal(manifest.configSchema.properties.model.const,'gpt-6-sol');assert.equal(manifest.configSchema.properties.effort.const,'low');
+console.log('PASS pinned host auth identity SSRF SDK exports, native structured turn schema, manifest contracts and fixed model/effort; no auth resolution or inference.');

@@ -1,7 +1,15 @@
-# custom-codex-fetch — planning only
+# custom-codex-fetch 0.1.0
 
-Proposed independent plugin name; no implementation, package manifest, registration, or installable artifact exists. This directory is deliberately excluded from npm workspaces.
+Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.8 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
 
-Next step: a bounded feasibility test of native Codex URL fetching using synthetic/public URLs and the existing native SDK authentication path, without changing production configuration. Establish whether exact requested URLs can be fetched with useful body content and provenance, and whether timeouts, cancellation, errors, and untrusted content can be handled reliably. Compare existing maintained capabilities before implementing a custom plugin.
+OpenClaw remains HTTP-first. With tools.web.fetch.provider = "custom-codex-fetch" and readability = false, HTML uses this fallback. JSON, markdown and plain text remain direct HTTP results. HTTP failures can invoke the provider; SSRF blocks and caller cancellation must not. These settings are not applied by this repository.
 
-Return evidence and a build/no-build recommendation before approving an implementation. Do not infer that search functionality already provides a working fetch plugin; do not extract a shared library until an actual shared requirement is demonstrated.
+Plugin settings require owner agentDir, exact existing OAuth profileId and absolute binaryPath. Resolve these dynamically from the owner's authorized current configuration; no private owner paths or credentials are packaged. No new authentication or API-key fallback occurs. Model is fixed gpt-6-sol, reasoning effort low; catalog availability and exact native OpenAI acknowledgments are mandatory. Defaults: timeoutMs 90000 (including authentication), startupMs 15000 within it, cleanupMs 5000 additional. At most two workers run concurrently; excess requests fail without retry.
+
+A successful nonce-backed feasibility probe established the retrieval path, not verification of every future extraction. Results are best-effort native agent text, not raw/complete origin responses. Each text starts with an essential limitation label. Status is always 0 (unknown origin HTTP status), finalUrl is the provider input URL (not a verified redirect destination), rawLength measures extracted characters, and truncated is true because completeness is unknown. MIME/title are omitted. Failed or ambiguous output, missing exact completed native open, empty chunks, model rerouting and native application retries fail closed. Only one final_answer JSON message is parsed; commentary and reasoning never become page text. Both text and markdown request faithful chunks, never summaries.
+
+The native structured outputSchema contract is supported by the pinned binary. The fixed developer instructions contain no fixture answer or nonce. A completed native action proves targeting, not independent body verification. Labels persist in runtime output; host normalization may add untrusted wrappers and spill the bounded available extraction. Character budgets below 1536 fail before authentication or worker startup; undersized extraction budgets fail rather than suppress required labels.
+
+Run npm test and npm run check:pack from the repository root. No additional inference is required for unit/pack verification. Activation/install/publication require separate review and authority.
+
+For installed pinned-host contract checks, run node scripts/check-fetch-host.mjs. Run node scripts/check-fetch-sdk.mjs <schema-directory> against locally generated Codex 0.158.0 app-server JSON schemas. These repository-only test adapters read the pinned host implementation and mock network/spill dependencies; they are not runtime imports and do not edit host code.
