@@ -1,0 +1,54 @@
+[
+  {
+    "generatedSummary": "Synthetic claim [report](https://example.com/report0)",
+    "nativeSearches": [
+      {
+        "action": {
+          "type": "search"
+        },
+        "results": [
+          {
+            "type": "text_result",
+            "ref_id": "turn1search0",
+            "url": "https://example.com/report0",
+            "title": "Synthetic report",
+            "snippet": "Synthetic issuer revenue increased in 2026."
+          },
+          {
+            "type": "text_result",
+            "ref_id": "turn1view0",
+            "url": "https://example.com/inventory0",
+            "title": "Synthetic inventory",
+            "snippet": "Total lines: 42"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "generatedSummary": "Synthetic claim [report](https://example.com/report1)",
+    "nativeSearches": [
+      {
+        "action": {
+          "type": "search"
+        },
+        "results": [
+          {
+            "type": "text_result",
+            "ref_id": "turn1search0",
+            "url": "https://example.com/report1",
+            "title": "Synthetic report",
+            "snippet": "Synthetic issuer revenue increased in 2026."
+          },
+          {
+            "type": "text_result",
+            "ref_id": "turn1view0",
+            "url": "https://example.com/inventory1",
+            "title": "Synthetic inventory",
+            "snippet": "Total lines: 42"
+          }
+        ]
+      }
+    ]
+  }
+]

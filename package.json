@@ -1,0 +1,12 @@
+{
+  "name": "openclaw-codex-plugins",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/custom-codex-search"],
+  "engines": {"node": ">=24"},
+  "scripts": {
+    "test": "npm test --workspace=custom-codex-search",
+    "pack:search": "npm pack --workspace=custom-codex-search --pack-destination=.",
+    "check:pack": "node scripts/check-search-pack.mjs"
+  }
+}

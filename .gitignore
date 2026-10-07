@@ -1,0 +1,11 @@
+node_modules/
+*.tgz
+artifacts/
+coverage/
+.env
+.env.*
+*.log
+*diagnostic*
+*config-snapshot*
+*EVIDENCE*
+credentials/

@@ -1,0 +1,109 @@
+{
+  "id": "custom-codex-search",
+  "name": "Custom Codex Search",
+  "description": "Standalone search-only native Sol worker",
+  "contracts": {
+    "webSearchProviders": [
+      "custom-codex-search"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "agentDir",
+      "profileId",
+      "binaryPath"
+    ],
+    "properties": {
+      "agentDir": {
+        "type": "string"
+      },
+      "profileId": {
+        "type": "string"
+      },
+      "binaryPath": {
+        "type": "string"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 300000,
+        "default": 90000
+      },
+      "startupMs": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 60000,
+        "default": 15000
+      },
+      "cleanupMs": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 10000,
+        "default": 5000
+      },
+      "model": {
+        "type": "string",
+        "pattern": "^[-a-zA-Z0-9._]{1,100}$",
+        "default": "gpt-6-sol"
+      },
+      "effort": {
+        "type": "string",
+        "enum": [
+          "none",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh"
+        ],
+        "default": "low"
+      },
+      "snippetChars": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 8000,
+        "default": 1500
+      },
+      "summaryChars": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 48000,
+        "default": 24000
+      }
+    }
+  },
+  "uiHints": {
+    "agentDir": {
+      "label": "agentDir"
+    },
+    "profileId": {
+      "label": "profileId"
+    },
+    "binaryPath": {
+      "label": "binaryPath"
+    },
+    "timeoutMs": {
+      "label": "timeoutMs"
+    },
+    "startupMs": {
+      "label": "startupMs"
+    },
+    "cleanupMs": {
+      "label": "cleanupMs"
+    },
+    "model": {
+      "label": "model"
+    },
+    "effort": {
+      "label": "effort"
+    },
+    "snippetChars": {
+      "label": "snippetChars"
+    },
+    "summaryChars": {
+      "label": "summaryChars"
+    }
+  }
+}

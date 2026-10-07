@@ -1,0 +1,41 @@
+{
+  "name": "custom-codex-search",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.mjs"
+    ]
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "description": "Experimental isolated native Codex web search provider for OpenClaw",
+  "license": "MIT",
+  "files": [
+    "index.mjs",
+    "search.mjs",
+    "policy.mjs",
+    "transport.mjs",
+    "auth-adapter.mjs",
+    "openclaw.plugin.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "test/*.test.mjs",
+    "test/native-summary-fixture.json"
+  ],
+  "peerDependencies": {
+    "openclaw": "2026.9.8"
+  },
+  "keywords": [
+    "openclaw",
+    "web-search",
+    "codex"
+  ]
+}
