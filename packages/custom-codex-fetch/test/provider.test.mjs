@@ -7,7 +7,7 @@ import { MODEL, searchPolicy, validateConfig, attestConfig } from '../policy.mjs
 import { createAuthAdapter } from '../auth-adapter.mjs';
 const config={agentDir:'/owner',profileId:'openai:locked',binaryPath:'/fake',timeoutMs:1000,startupMs:100,cleanupMs:100};
 const token={accessToken:'offline-fake',chatgptAccountId:'fake-account',chatgptPlanType:'plus'};
-function fake(mode='ok', selected={model:MODEL,effort:'low'}, catalogOverrides={}, ackOverrides={}){
+function fake(mode='ok', selected={model:MODEL,effort:'low'}, catalogOverrides={}, ackOverrides={}, mutateItems=()=>{}){
   const state={closed:0,roots:[],calls:[]};
   state.createServer=(bin,root,policy,signal)=>{
     state.roots.push(root);assert.equal(policy.web_search,'live');
@@ -25,6 +25,7 @@ function fake(mode='ok', selected={model:MODEL,effort:'low'}, catalogOverrides={
       if(method==='turn/start'){
         const items=[{type:'userMessage',id:'input',clientId:null,content:p.input},{id:'answer',phase:'final_answer',memoryCitation:null,delivery:null,questions:null,type:'agentMessage',text:mode==='citations'?'No sources':JSON.stringify({url:'https://example.com/page',status:'retrieved',chunks:['Offline sample body'],error:''}),extra:'strip-me'}];
         if(mode!=='missingsearch')items.push({type:'webSearch',id:'search',query:'q',action:{type:'openPage',url:'https://example.com/page'},results:null});
+        mutateItems(items);
         for(const item of items)s.events.push({method:'item/completed',params:{threadId:'t',turnId:'u',item}});
         if(mode==='capability')s.events.push({method:'item/completed',params:{threadId:'t',turnId:'u',item:{type:'commandExecution',id:'cmd'}}});
         if(['bufferedreroute','later reroute','retry','foreign'].includes(mode)){const event={method:mode==='retry'?'error':'model/rerouted',params:{threadId:mode==='foreign'?'other':'t',turnId:'u',fromModel:MODEL,toModel:'gpt-6.1',reason:'highRiskCyberActivity',error:{message:'disconnected',codexErrorInfo:null,additionalDetails:null},willRetry:true}};if(mode==='later reroute')setTimeout(()=>s.onEvent(event),5);else s.events.push(event);}
@@ -112,4 +113,22 @@ test('manifest selectors match runtime defaults and accepted effort enum',async(
   assert.deepEqual(p.effort.enum,['none','minimal','low','medium','high','xhigh','max','ultra']);
   for(const effort of p.effort.enum)assert.equal(validateConfig({...config,effort}).effort,effort);
   assert(!new RegExp(p.model.pattern).test('   '));assert(new RegExp(p.model.pattern).test(' gpt-6-luna '));
+});
+
+for(const [reason,mutate] of [
+ ['missing-native-open',x=>x.find(i=>i.type==='webSearch').action.type='search'],
+ ['url-mismatch',x=>x.find(i=>i.type==='webSearch').action.url+='?offline-secret-canary'],
+ ['final-phase-missing',x=>x.find(i=>i.type==='agentMessage').phase='commentary'],
+ ['invalid-json',x=>x.find(i=>i.type==='agentMessage').text='offline-secret-canary'],
+ ['schema-invalid',x=>x.find(i=>i.type==='agentMessage').text=JSON.stringify({secret:'offline-secret-canary'})],
+ ['native-unable',x=>x.find(i=>i.type==='agentMessage').text=JSON.stringify({url:'https://example.com/page',status:'unable',chunks:[],error:'offline-secret-canary'})],
+ ['empty-chunks',x=>x.find(i=>i.type==='agentMessage').text=JSON.stringify({url:'https://example.com/page',status:'retrieved',chunks:[],error:''})],
+ ['empty-extraction',x=>x.find(i=>i.type==='agentMessage').text=JSON.stringify({url:'https://example.com/page',status:'retrieved',chunks:['\u0001'],error:''})],
+ ['normalization-internal-error',x=>Object.defineProperty(x.find(i=>i.type==='agentMessage'),'text',{get(){throw Object.assign(Error('offline-secret-canary'),{code:'native-unable',cause:{code:'invalid-json'}});}})]
+])test('caller receives only stable diagnostic '+reason,async()=>{
+ const d=fake('ok',undefined,{}, {},mutate);
+ await assert.rejects(search(config,{}, {url:'https://example.com/page'}, {},d),error=>{
+ assert.equal(error.message,'Custom Codex fetch failed closed [stage=extraction/normalize; reason=invalid-native-extraction; subreason='+reason+']');
+ assert.equal(error.cause,undefined);assert(!JSON.stringify(error).includes('offline-secret-canary'));return true;
+ });assert.equal(d.closed,1);
 });

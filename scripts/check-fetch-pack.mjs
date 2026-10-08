@@ -15,7 +15,7 @@ try {
   assert.equal(packs.length, 1);
   const [pack] = packs;
   assert.equal(pack.name, 'custom-codex-fetch');
-  assert.equal(pack.version, '0.1.1');
+  assert.equal(pack.version, '0.1.2');
   assert.deepEqual(pack.files.map(f => f.path).sort(), expected);
   execFileSync('tar', ['-xzf', join(temp, pack.filename), '-C', temp]);
   const extracted = join(temp, 'package');

@@ -1,4 +1,4 @@
-# custom-codex-fetch 0.1.1
+# custom-codex-fetch 0.1.2
 
 Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.8 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
 
@@ -13,3 +13,5 @@ The native structured outputSchema contract is supported by the pinned binary. T
 Run npm test and npm run check:pack from the repository root. No additional inference is required for unit/pack verification. Activation/install/publication require separate review and authority.
 
 For installed pinned-host contract checks, run node scripts/check-fetch-host.mjs. Run node scripts/check-fetch-sdk.mjs <schema-directory> against locally generated Codex 0.158.0 app-server JSON schemas. These repository-only test adapters read the pinned host implementation and mock network/spill dependencies; they are not runtime imports and do not edit host code.
+
+Normalization errors retain reason=invalid-native-extraction and add a static local-check subreason. Unexpected exceptions use normalization-internal-error; native messages and payloads are never included.

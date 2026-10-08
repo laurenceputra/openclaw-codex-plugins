@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+Bounded static normalization failure subreasons; generic classification, acceptance gates and extraction semantics unchanged. Native messages, URLs and payloads never enter errors.
+
 ## 0.1.1
 
 Configurable model and reasoning effort with unchanged gpt-6-sol/low defaults. Trimmed nonempty model IDs, strict native effort enum, authenticated catalog text/effort checks and exact selected-model/provider/effort acknowledgments; no fallback. Authentication, isolation, budgets and extraction behavior unchanged.

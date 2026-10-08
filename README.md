@@ -6,7 +6,7 @@ This private npm workspace is a repository container, not an installable plugin.
 ## Packages
 
 - [custom-codex-search](packages/custom-codex-search/README.md): reviewed version 0.2.0, retaining npm name and plugin ID custom-codex-search. See its README for host compatibility and configuration.
-- [custom-codex-fetch](packages/custom-codex-fetch/README.md): experimental version 0.1.1; independently packaged HTTP-first fetch fallback.
+- [custom-codex-fetch](packages/custom-codex-fetch/README.md): experimental version 0.1.2; independently packaged HTTP-first fetch fallback.
 
 ## Test and package search
 
@@ -37,4 +37,4 @@ MIT license; the search package's existing copyright notice is preserved in its 
 
 ## Native fetch fallback
 
-[custom-codex-fetch 0.1.1](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.
+[custom-codex-fetch 0.1.2](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.

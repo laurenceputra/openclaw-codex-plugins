@@ -1,4 +1,4 @@
-import { validateUrl, normalizeExtraction, OUTPUT_SCHEMA } from './extraction.mjs';
+import { validateUrl, normalizeExtraction, normalizationFailureReason, OUTPUT_SCHEMA } from './extraction.mjs';
 import { mkdtemp, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -42,7 +42,7 @@ export async function fetchPage(config, cfg, args, context={}, dependencies={}) 
       const fresh=await bounded(auth({cfg,agentDir:c.agentDir,profileId:c.profileId,signal:ac.signal,forceRefresh:true,accountId:token.chatgptAccountId}));current();return fresh;
     };
     const rpc=async(method,p)=>{stage=method;current();const r=await bounded(server.request(method,p));current();return r;};
-    await rpc('initialize',{clientInfo:{name:'custom_codex_fetch',version:'0.1.1'},capabilities:{experimentalApi:true}});server.send({method:'initialized'});
+    await rpc('initialize',{clientInfo:{name:'custom_codex_fetch',version:'0.1.2'},capabilities:{experimentalApi:true}});server.send({method:'initialized'});
     await rpc('account/login/start',{type:'chatgptAuthTokens',...token});
     const account=await rpc('account/read',{refreshToken:false});
     if(account?.account?.type!=='chatgpt')throw new Error('Native subscription account unavailable');
@@ -94,7 +94,8 @@ export async function fetchPage(config, cfg, args, context={}, dependencies={}) 
   } catch (error) {
     // Only fixed local classifications and allowlisted RPC names; never native/auth messages.
     const cause=stage==='extraction/normalize' ? 'invalid-native-extraction' : stage==='turn/completed' ? 'native-turn-or-capability-check' : stage==='cleanup' ? 'owned-process-cleanup' : 'native-rpc-or-policy-check';
-    throw new Error('Custom Codex fetch '+(ac.signal.aborted ? 'cancelled or timed out' : 'failed closed')+' [stage='+stage+'; reason='+cause+']');
+    const subreason=stage==='extraction/normalize' ? '; subreason='+normalizationFailureReason(error) : '';
+    throw new Error('Custom Codex fetch '+(ac.signal.aborted ? 'cancelled or timed out' : 'failed closed')+' [stage='+stage+'; reason='+cause+subreason+']');
   }
   finally {
     clearTimeout(total);clearTimeout(startup);context.signal?.removeEventListener('abort',abort);
