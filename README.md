@@ -37,4 +37,8 @@ MIT license; the search package's existing copyright notice is preserved in its 
 
 ## Native fetch fallback
 
-[custom-codex-fetch 0.1.2](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.
+[custom-codex-fetch 0.1.2](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. With the recommended owner-selected readability-first route, successful HTTP HTML extraction bypasses native fallback. Native extraction remains best-effort and unverified per request; its HTTP status/redirects are unknown. See the [routing and configuration guidance](packages/custom-codex-fetch/README.md#routing-and-recommended-operator-selection) and security boundaries before review/activation. Search remains independently packaged and unchanged.
+
+## Known issues
+
+Hosted native extraction can return native-unable for some exact URLs, including observed example.com and IANA queries; other queries succeed. Backend cause is unknown. Readability-first is a validated HTTP-route workaround, not a native repair. See [known issues and diagnosis](packages/custom-codex-fetch/README.md#known-issues-and-diagnosis) for sanitized observations, metadata interpretation and future isolation-test guidance.
