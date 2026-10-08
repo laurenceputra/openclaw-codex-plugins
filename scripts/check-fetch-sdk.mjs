@@ -11,5 +11,7 @@ assert.equal(typeof auth.resolveApiKeyForProvider,'function');assert.equal(typeo
 const schema=JSON.parse(await readFile(schemaDir+'/v2/TurnStartParams.json'));
 for(const field of ['outputSchema','threadId','model','effort','sandboxPolicy','input'])assert(field in schema.properties,field);
 const manifest=JSON.parse(await readFile(new URL('../packages/custom-codex-fetch/openclaw.plugin.json',import.meta.url)));
-assert.deepEqual(manifest.contracts.webFetchProviders,['custom-codex-fetch']);assert.equal(manifest.configSchema.properties.model.const,'gpt-6-sol');assert.equal(manifest.configSchema.properties.effort.const,'low');
-console.log('PASS pinned host auth identity SSRF SDK exports, native structured turn schema, manifest contracts and fixed model/effort; no auth resolution or inference.');
+assert.deepEqual(manifest.contracts.webFetchProviders,['custom-codex-fetch']);assert.equal(manifest.configSchema.properties.model.default,'gpt-6-sol');assert.equal(manifest.configSchema.properties.effort.default,'low');
+assert.equal(schema.definitions.ReasoningEffort.type,'string');assert.equal(schema.definitions.ReasoningEffort.minLength,1);
+assert.deepEqual(manifest.configSchema.properties.effort.enum,['none','minimal','low','medium','high','xhigh','max','ultra']);
+console.log('PASS pinned host auth identity SSRF SDK exports, native structured turn schema, manifest contracts and configurable model/effort defaults; no auth resolution or inference.');

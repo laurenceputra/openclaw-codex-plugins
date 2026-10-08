@@ -45,13 +45,23 @@
       },
       "model": {
         "type": "string",
-        "const": "gpt-6-sol",
-        "default": "gpt-6-sol"
+        "default": "gpt-6-sol",
+        "minLength": 1,
+        "pattern": "\\S"
       },
       "effort": {
         "type": "string",
-        "const": "low",
-        "default": "low"
+        "default": "low",
+        "enum": [
+          "none",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max",
+          "ultra"
+        ]
       }
     }
   },
@@ -75,10 +85,12 @@
       "label": "cleanupMs"
     },
     "model": {
-      "label": "model"
+      "label": "Model",
+      "help": "Authenticated native catalog model ID (default: gpt-6-sol); must support text and selected effort."
     },
     "effort": {
-      "label": "effort"
+      "label": "Reasoning effort",
+      "help": "Native reasoning effort (default: low); must be supported by selected model."
     }
   }
 }

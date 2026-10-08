@@ -7,7 +7,7 @@ import { MODEL, searchPolicy, validateConfig, attestConfig } from '../policy.mjs
 import { createAuthAdapter } from '../auth-adapter.mjs';
 const config={agentDir:'/owner',profileId:'openai:locked',binaryPath:'/fake',timeoutMs:1000,startupMs:100,cleanupMs:100};
 const token={accessToken:'offline-fake',chatgptAccountId:'fake-account',chatgptPlanType:'plus'};
-function fake(mode='ok'){
+function fake(mode='ok', selected={model:MODEL,effort:'low'}, catalogOverrides={}, ackOverrides={}){
   const state={closed:0,roots:[],calls:[]};
   state.createServer=(bin,root,policy,signal)=>{
     state.roots.push(root);assert.equal(policy.web_search,'live');
@@ -20,8 +20,8 @@ function fake(mode='ok'){
       if(method==='configRequirements/read')return {requirements:null};
       if(method==='config/read')return {layers:[],config:{features:Object.fromEntries(Object.keys(searchPolicy).filter(k=>k.startsWith('features.')).map(k=>[k.slice(9),false])),web_search:'live'}};
       if(method==='model/list'&&mode==='modelconfig')return {data:[{id:'gpt-test',model:'gpt-test',inputModalities:['text'],supportedReasoningEfforts:[{reasoningEffort:'high'}]}]};
-      if(method==='model/list'&&mode==='noModel')return {data:[]}; if(method==='model/list')return {data:[{id:MODEL,model:MODEL,hidden:true,inputModalities:['text'],supportedReasoningEfforts:[{reasoningEffort:'low'}]}]};
-      if(method==='thread/start')return {model:mode==='reroute'?'gpt-other':mode==='modelconfig'?'gpt-test':MODEL,modelProvider:mode==='providerReroute'?'other':'openai',reasoningEffort:mode==='effortreroute'?'medium':mode==='modelconfig'?'high':'low',thread:{id:'t'}};
+      if(method==='model/list'&&mode==='noModel')return {data:[]}; if(method==='model/list')return {data:[{id:selected.model,model:selected.model,hidden:true,inputModalities:['text'],supportedReasoningEfforts:[{reasoningEffort:selected.effort}],...catalogOverrides}]};
+      if(method==='thread/start')return {model:mode==='reroute'?'gpt-other':mode==='modelconfig'?'gpt-test':selected.model,modelProvider:mode==='providerReroute'?'other':'openai',reasoningEffort:mode==='effortreroute'?'medium':mode==='modelconfig'?'high':selected.effort,thread:{id:'t'},...ackOverrides};
       if(method==='turn/start'){
         const items=[{type:'userMessage',id:'input',clientId:null,content:p.input},{id:'answer',phase:'final_answer',memoryCitation:null,delivery:null,questions:null,type:'agentMessage',text:mode==='citations'?'No sources':JSON.stringify({url:'https://example.com/page',status:'retrieved',chunks:['Offline sample body'],error:''}),extra:'strip-me'}];
         if(mode!=='missingsearch')items.push({type:'webSearch',id:'search',query:'q',action:{type:'openPage',url:'https://example.com/page'},results:null});
@@ -72,3 +72,44 @@ test('schema sent and developer instructions contain no fixture answer',async()=
 test('native refresh locks original account and forces framework refresh',async()=>{const d=fake('refresh'),calls=[];d.auth=async p=>{calls.push(p);return token;};await search(config,{}, {url:'https://example.com/page'}, {},d);assert.equal(calls.length,2);assert.equal(calls[1].forceRefresh,true);assert.equal(calls[1].accountId,token.chatgptAccountId);assert.equal(calls[1].profileId,config.profileId);});
 
 test('tiny caller budget fails before preflight/auth/process',async()=>{const d=fake();await assert.rejects(search(config,{}, {url:'https://example.com/page',maxChars:100},{},d),/maxChars/);assert.equal(d.roots.length,0);assert.equal(d.calls.length,0);});
+
+const alternate={model:'gpt-6-luna',effort:'high'};
+test('alternate catalog model and effort explicitly requested and acknowledged',async()=>{
+  const d=fake('ok',alternate);let evidence;
+  await search({...config,model:'  gpt-6-luna  ',effort:'high'},{},{url:'https://example.com/page'},{},{...d,onEvidence:e=>evidence=e});
+  const thread=d.calls.find(([m])=>m==='thread/start')[1],turn=d.calls.find(([m])=>m==='turn/start')[1];
+  assert.equal(thread.model,alternate.model);assert.equal(thread.modelProvider,'openai');assert.equal(thread.config.model_reasoning_effort,'high');
+  assert.equal(turn.model,alternate.model);assert.equal(turn.effort,'high');assert.equal(evidence.model,alternate.model);assert.equal(evidence.effort,'high');
+});
+for(const [label,catalog,ack] of [
+  ['absent selected model',{id:MODEL,model:MODEL},{}],
+  ['catalog identifier mismatch',{id:MODEL},{}],
+  ['no text input',{inputModalities:['image']},{}],
+  ['unsupported selected effort',{supportedReasoningEfforts:[{reasoningEffort:'low'}]},{}],
+  ['missing catalog effort',{supportedReasoningEfforts:undefined},{}],
+  ['different ACK model',{}, {model:MODEL}],
+  ['missing ACK model',{}, {model:undefined}],
+  ['different ACK provider',{}, {modelProvider:'other'}],
+  ['missing ACK provider',{}, {modelProvider:undefined}],
+  ['different ACK effort',{}, {reasoningEffort:'low'}],
+  ['missing ACK effort',{}, {reasoningEffort:undefined}]
+])test('selected model rejects '+label,async()=>{
+  const d=fake('ok',alternate,catalog,ack);
+  await assert.rejects(search({...config,...alternate},{},{url:'https://example.com/page'},{},d));
+  assert(!d.calls.some(([m])=>m==='turn/start'));assert.equal(d.closed,1);
+});
+test('config selector defaults and strict validation',()=>{
+  const defaults=validateConfig({agentDir:config.agentDir,profileId:config.profileId,binaryPath:config.binaryPath});
+  assert.equal(defaults.model,MODEL);assert.equal(defaults.effort,'low');assert.equal(defaults.timeoutMs,90000);assert.equal(defaults.startupMs,15000);assert.equal(defaults.cleanupMs,5000);
+  assert.equal(validateConfig({...config,model:' arbitrary/model ID '}).model,'arbitrary/model ID');
+  for(const model of ['', '  ',null,42,{},[]])assert.throws(()=>validateConfig({...config,model}),/Invalid model/);
+  for(const effort of ['', ' low ',null,42,{},'extreme'])assert.throws(()=>validateConfig({...config,effort}),/Invalid effort/);
+  for(const effort of ['none','minimal','low','medium','high','xhigh','max','ultra'])assert.equal(validateConfig({...config,effort}).effort,effort);
+});
+test('manifest selectors match runtime defaults and accepted effort enum',async()=>{
+  const manifest=JSON.parse(await readFile(new URL('../openclaw.plugin.json',import.meta.url)));
+  const p=manifest.configSchema.properties;assert.equal(p.model.const,undefined);assert.equal(p.model.default,MODEL);assert.equal(p.effort.default,'low');
+  assert.deepEqual(p.effort.enum,['none','minimal','low','medium','high','xhigh','max','ultra']);
+  for(const effort of p.effort.enum)assert.equal(validateConfig({...config,effort}).effort,effort);
+  assert(!new RegExp(p.model.pattern).test('   '));assert(new RegExp(p.model.pattern).test(' gpt-6-luna '));
+});

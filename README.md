@@ -6,7 +6,7 @@ This private npm workspace is a repository container, not an installable plugin.
 ## Packages
 
 - [custom-codex-search](packages/custom-codex-search/README.md): reviewed version 0.2.0, retaining npm name and plugin ID custom-codex-search. See its README for host compatibility and configuration.
-- [custom-codex-fetch](packages/custom-codex-fetch/README.md): planning only; not implemented or installable, and not an npm workspace.
+- [custom-codex-fetch](packages/custom-codex-fetch/README.md): experimental version 0.1.1; independently packaged HTTP-first fetch fallback.
 
 ## Test and package search
 
@@ -31,10 +31,10 @@ Read the search package README and SECURITY.md first: it has strict OpenClaw hos
 
 This repository owns future durable package development. The original working source is retained during migration review; do not independently maintain both copies. Retiring that source or updating external pointers requires a separate approved step.
 
-Plugins version independently. A future reviewed search release can use search-v0.2.0; no tag or publication is created by this setup. The fetch name is provisional until its bounded feasibility test and implementation are approved. No npm or ClawHub publication is configured.
+Plugins version independently. A future reviewed search release can use search-v0.2.0; no tag or publication is created by this setup. Fetch installation and activation require separate review and operator approval. No npm or ClawHub publication is configured.
 
 MIT license; the search package's existing copyright notice is preserved in its package license and the root license.
 
 ## Native fetch fallback
 
-[custom-codex-fetch 0.1.0](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.
+[custom-codex-fetch 0.1.1](packages/custom-codex-fetch/README.md) is an independent, experimental HTTP-first web_fetch fallback. Native extraction is best-effort and unverified per request; HTTP status/redirects are unknown. See its security and compatibility boundaries before review/activation. Search remains independently packaged and unchanged.

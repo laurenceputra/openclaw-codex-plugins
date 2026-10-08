@@ -16,9 +16,11 @@ export function validateConfig(c) {
     out[k] = c[k] ?? d;
     if (!Number.isInteger(out[k]) || out[k]<min || out[k]>max) throw new Error('Invalid '+k);
   }
-  out.model=MODEL; out.effort='low'; if((c.model!==undefined&&c.model!==MODEL)||(c.effort!==undefined&&c.effort!=='low'))throw new Error('Fixed model/effort required');
-  if(typeof out.model!=='string'||!/^[-a-zA-Z0-9._]{1,100}$/.test(out.model))throw new Error('Invalid model');
-  if(!['none','minimal','low','medium','high','xhigh'].includes(out.effort))throw new Error('Invalid effort');
+  out.model=c.model === undefined ? MODEL : c.model;
+  out.effort=c.effort === undefined ? 'low' : c.effort;
+  if(typeof out.model!=='string'||!out.model.trim())throw new Error('Invalid model');
+  out.model=out.model.trim();
+  if(!['none','minimal','low','medium','high','xhigh','max','ultra'].includes(out.effort))throw new Error('Invalid effort');
   if (out.startupMs > out.timeoutMs) throw new Error('startupMs exceeds total budget');
   return out;
 }
