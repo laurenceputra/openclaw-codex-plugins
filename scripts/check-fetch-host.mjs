@@ -1,10 +1,10 @@
-// Test-only source adapter for the exact installed 2026.9.8 host. No core edits.
+// Test-only source adapter for the exact installed 2026.9.9 host. No core edits.
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {normalizeExtraction,LABEL} from '../packages/custom-codex-fetch/extraction.mjs';
 const dist=process.env.OPENCLAW_HOST_DIST ?? '/app/dist';
-assert.equal(JSON.parse(await readFile(dist+'/../package.json')).version,'2026.9.8');
-const source=await readFile(dist+'/openclaw-tools-S8b3Hz6z.mjs','utf8');
+assert.equal(JSON.parse(await readFile(dist+'/../package.json')).version,'2026.9.9');
+const source=await readFile(dist+'/openclaw-tools-CfoJyEsW.mjs','utf8');
 const nl=String.fromCharCode(10);
 function fn(name){let i=source.indexOf('function '+name+'(');assert(i>=0);if(source.slice(i-6,i)==='async ')i-=6;const j=source.indexOf(nl+'}',i);assert(j>i);return source.slice(i,j+2);}
 const {a:wrapExternalContent,i:truncateSanitizedExternalContent,o:wrapWebContent}=await import(dist+'/external-content-CmQTCbqd.mjs');

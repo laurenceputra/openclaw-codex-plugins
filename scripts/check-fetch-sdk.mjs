@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 const dist=process.env.OPENCLAW_HOST_DIST ?? '/app/dist';
 const schemaDir=process.argv[2];if(!schemaDir)throw Error('Pass Codex 0.158.0 app-server generate-json-schema output directory');
-assert.equal(JSON.parse(await readFile(dist+'/../package.json')).version,'2026.9.8');
+assert.equal(JSON.parse(await readFile(dist+'/../package.json')).version,'2026.9.9');
 const auth=await import(pathToFileURL(dist+'/plugin-sdk/provider-auth-runtime.js'));
 const identity=await import(pathToFileURL(dist+'/plugin-sdk/provider-auth.js'));
 const guard=await import(pathToFileURL(dist+'/plugin-sdk/ssrf-runtime.js'));

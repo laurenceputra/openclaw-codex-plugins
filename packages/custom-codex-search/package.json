@@ -1,6 +1,6 @@
 {
   "name": "custom-codex-search",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -31,7 +31,7 @@
     "test/native-summary-fixture.json"
   ],
   "peerDependencies": {
-    "openclaw": "2026.9.8"
+    "openclaw": "2026.9.9"
   },
   "keywords": [
     "openclaw",

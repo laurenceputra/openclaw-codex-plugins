@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Support reviewed OpenClaw 2026.9.9 provider registration and execution interfaces; preserve exact host-version compatibility and all authentication, isolation, and evidence checks.
+
 ## 0.1.2
 
 Bounded static normalization failure subreasons; generic classification, acceptance gates and extraction semantics unchanged. Native messages, URLs and payloads never enter errors.

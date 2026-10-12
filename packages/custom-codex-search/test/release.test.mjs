@@ -28,10 +28,10 @@ test('config defaults ranges model effort and root inline settings',()=>{
  for(const value of [{model:'unsafe model'},{effort:'research'},{snippetChars:99},{summaryChars:48001}])assert.throws(()=>validateConfig({...config,...value}));
 });
 test('package allowlist excludes operational artifacts and is private pending publication',async()=>{
- const p=JSON.parse(await readFile(new URL('../package.json',import.meta.url)));assert.equal(p.version,'0.2.0');assert.equal(p.private,true);assert.equal(p.peerDependencies.openclaw,'2026.9.8');assert(!p.files.some(f=>/canary|EVIDENCE|config-snapshot/.test(f)));
+ const p=JSON.parse(await readFile(new URL('../package.json',import.meta.url)));assert.equal(p.version,'0.2.1');assert.equal(p.private,true);assert.equal(p.peerDependencies.openclaw,'2026.9.9');assert(!p.files.some(f=>/canary|EVIDENCE|config-snapshot/.test(f)));
 });
 
-test('runtime host version and registration API fail closed',()=>{for(const api of [{},{runtime:{version:'2026.9.9'},registerWebSearchProvider(){}},{runtime:{version:'2026.9.8'}}])assert.throws(()=>plugin.register(api));let registered;plugin.register({runtime:{version:'2026.9.8'},registerWebSearchProvider(p){registered=p;}});assert.equal(registered.id,'custom-codex-search');});
+test('runtime host version and registration API fail closed',()=>{for(const api of [{},{runtime:{version:'2026.9.8'},registerWebSearchProvider(){}},{runtime:{version:'2026.9.9'}}])assert.throws(()=>plugin.register(api));let registered;plugin.register({runtime:{version:'2026.9.9'},registerWebSearchProvider(p){registered=p;}});assert.equal(registered.id,'custom-codex-search');});
 
 test('uppercase and network-path URLs share retained budget in every displayed section',()=>{
  const links='[upper](HTTPS://second.example/source) [network](//third.example/source) bare HTTPS://fourth.example/source //fifth.example/source';

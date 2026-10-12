@@ -1,10 +1,10 @@
 # Custom Codex Search
 
-Experimental standalone OpenClaw web-search provider, ID `custom-codex-search`. Local release candidate 0.2.0, not a published or production-proven release. Original Node standard-library implementation, MIT licensed; no copied upstream runtime. No build framework or runtime dependencies beyond the host SDK and operator-selected native binary.
+Experimental standalone OpenClaw web-search provider, ID `custom-codex-search`. Local release candidate 0.2.1, not a published or production-proven release. Original Node standard-library implementation, MIT licensed; no copied upstream runtime. No build framework or runtime dependencies beyond the host SDK and operator-selected native binary.
 
 ## Compatibility
 
-Tested integration baseline: Node 24, OpenClaw **2026.9.8**, native Codex **0.158.0**. Host peer dependency is pinned; other versions are not supported by this release candidate. Registration and runtime protocol/auth shape checks fail closed. Native authenticated catalog must expose the exact configured model ID/model, text modality and effort. Thread acknowledgement must preserve model/provider; correlated reroutes fail closed. Thread configuration explicitly requests effort and its reasoningEffort acknowledgement must match; effort is also sent explicitly on every turn. Higher reasoning is not a research mode.
+Tested integration baseline: Node 24, OpenClaw **2026.9.9**, native Codex **0.158.0**. Host peer dependency is pinned; other versions are not supported by this release candidate. Registration and runtime protocol/auth shape checks fail closed. Native authenticated catalog must expose the exact configured model ID/model, text modality and effort. Thread acknowledgement must preserve model/provider; correlated reroutes fail closed. Thread configuration explicitly requests effort and its reasoningEffort acknowledgement must match; effort is also sent explicitly on every turn. Higher reasoning is not a research mode.
 
 The sole authorized private API is provider-auth-runtime.resolveApiKeyForProvider. The public wrapper in the tested host drops exact-profile, cancellation and refresh controls. This exception is experimental and may break on host updates; provider-auth identity parsing is public. No parent-model inheritance, fallback, API-key billing or auth-file access/copying.
 

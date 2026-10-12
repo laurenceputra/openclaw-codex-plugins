@@ -14,7 +14,7 @@ for(const value of ['file:///etc/passwd','http://user:pass@example.com','http://
 test('Unicode post-scrub bounded output',()=>{const o=normalizeExtraction(items({url,status:'retrieved',chunks:['😀'.repeat(10000)],error:''}),url,{maxChars:2048});assert(o.text.length<2048);assert(o.text.includes(LABEL));});
 test('tiny budget fails',()=>assert.throws(()=>normalizeExtraction(items(),url,{maxChars:100})));
 test('configurable model effort',()=>{const c={profileId:'p',agentDir:'/a',binaryPath:'/b'};assert.equal(validateConfig({...c,model:'other'}).model,'other');assert.equal(validateConfig({...c,effort:'high'}).effort,'high');});
-test('register ordinary provider',()=>{let registered;plugin.register({runtime:{version:'2026.9.8'},registerWebFetchProvider:p=>registered=p});assert.equal(registered.id,'custom-codex-fetch');assert.equal(registered.requiresCredential,false);assert.equal(descriptor(()=>({})).createTool({}).execute.constructor.name,'Function');});
+test('register ordinary provider',()=>{let registered;plugin.register({runtime:{version:'2026.9.9'},registerWebFetchProvider:p=>registered=p});assert.equal(registered.id,'custom-codex-fetch');assert.equal(registered.requiresCredential,false);assert.equal(descriptor(()=>({})).createTool({}).execute.constructor.name,'Function');});
 
 const diagnosticCases=[
  ['missing-native-open',x=>x.splice(0,1)],

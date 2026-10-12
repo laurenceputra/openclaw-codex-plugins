@@ -1,6 +1,6 @@
-# custom-codex-fetch 0.1.2
+# custom-codex-fetch 0.1.3
 
-Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.8 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
+Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.9 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
 
 ## Routing and recommended operator selection
 

@@ -5,4 +5,4 @@ export function descriptor(resolveConfig) {
     getCredentialValue:()=>undefined,setCredentialValue:()=>{},
     createTool:ctx=>({description:'Best-effort native extraction of requested public page; origin status unknown.',execute:(args,context)=>fetchPage(resolveConfig(),ctx.config,args,context)}) };
 }
-export default {id:'custom-codex-fetch',name:'Custom Codex Fetch',register(api){if(api.runtime?.version!=='2026.9.8'||typeof api.registerWebFetchProvider!=='function')throw new Error('Incompatible OpenClaw web fetch API');api.registerWebFetchProvider(descriptor(()=>api.pluginConfig));}};
+export default {id:'custom-codex-fetch',name:'Custom Codex Fetch',register(api){if(api.runtime?.version!=='2026.9.9'||typeof api.registerWebFetchProvider!=='function')throw new Error('Incompatible OpenClaw web fetch API');api.registerWebFetchProvider(descriptor(()=>api.pluginConfig));}};

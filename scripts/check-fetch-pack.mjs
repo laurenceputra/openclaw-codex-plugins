@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const source = join(root, 'packages/custom-codex-fetch');
-const expected = ['CHANGELOG.md', 'LICENSE', 'README.md', 'SECURITY.md', 'auth-adapter.mjs', 'index.mjs', 'openclaw.plugin.json', 'package.json', 'policy.mjs', 'fetch.mjs', 'extraction.mjs', 'transport.mjs', 'test/extraction.test.mjs', 'test/provider.test.mjs', 'test/transport.test.mjs'].sort();
+const expected = ['CHANGELOG.md', 'LICENSE', 'README.md', 'SECURITY.md', 'auth-adapter.mjs', 'index.mjs', 'openclaw.plugin.json', 'package.json', 'policy.mjs', 'fetch.mjs', 'extraction.mjs', 'transport.mjs', 'test/release.test.mjs', 'test/extraction.test.mjs', 'test/provider.test.mjs', 'test/transport.test.mjs'].sort();
 const temp = mkdtempSync(join(tmpdir(), 'custom-codex-fetch-pack-'));
 try {
   const metadata = JSON.parse(execFileSync('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', temp], {cwd: source, encoding: 'utf8'}));
@@ -15,7 +15,7 @@ try {
   assert.equal(packs.length, 1);
   const [pack] = packs;
   assert.equal(pack.name, 'custom-codex-fetch');
-  assert.equal(pack.version, '0.1.2');
+  assert.equal(pack.version, '0.1.3');
   assert.deepEqual(pack.files.map(f => f.path).sort(), expected);
   execFileSync('tar', ['-xzf', join(temp, pack.filename), '-C', temp]);
   const extracted = join(temp, 'package');
@@ -34,7 +34,7 @@ try {
   }
   const tests = readdirSync(join(extracted, 'test')).filter(f => f.endsWith('.test.mjs')).sort();
   execFileSync(process.execPath, ['--test', ...tests.map(f => join('test', f))], {cwd: extracted, stdio: 'inherit'});
-  console.log('PASS: exact 15-file allowlist, matching package bytes, contained imports, and extracted tests.');
+  console.log('PASS: exact 16-file allowlist, matching package bytes, contained imports, and extracted tests.');
 } finally {
   rmSync(temp, {recursive: true, force: true});
 }
