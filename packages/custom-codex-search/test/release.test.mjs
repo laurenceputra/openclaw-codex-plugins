@@ -28,10 +28,16 @@ test('config defaults ranges model effort and root inline settings',()=>{
  for(const value of [{model:'unsafe model'},{effort:'research'},{snippetChars:99},{summaryChars:48001}])assert.throws(()=>validateConfig({...config,...value}));
 });
 test('package allowlist excludes operational artifacts and is private pending publication',async()=>{
- const p=JSON.parse(await readFile(new URL('../package.json',import.meta.url)));assert.equal(p.version,'0.2.1');assert.equal(p.private,true);assert.equal(p.peerDependencies.openclaw,'2026.9.9');assert(!p.files.some(f=>/canary|EVIDENCE|config-snapshot/.test(f)));
+ const p=JSON.parse(await readFile(new URL('../package.json',import.meta.url)));assert.equal(p.version,'0.2.2');assert.equal(p.private,true);assert.equal(p.peerDependencies.openclaw,'>=2026.9.9');assert(!p.files.some(f=>/canary|EVIDENCE|config-snapshot/.test(f)));
 });
 
-test('runtime host version and registration API fail closed',()=>{for(const api of [{},{runtime:{version:'2026.9.8'},registerWebSearchProvider(){}},{runtime:{version:'2026.9.9'}}])assert.throws(()=>plugin.register(api));let registered;plugin.register({runtime:{version:'2026.9.9'},registerWebSearchProvider(p){registered=p;}});assert.equal(registered.id,'custom-codex-search');});
+test('stable host range and required registration API',()=>{
+ const accepted=['2026.9.9','2026.10.2','2026.12.0','2027.0.0','2026.9.9+build.001','2026.10.2+host-build.0'];
+ const rejected=[undefined,null,2026,{},'','2026.9.8','2026.8.99','2025.99.99','2026.9.9-rc.1','2026.10.2-beta','2027.0.0-rc.1','2026.9.9-rc.1+build','2026.09.9','2026.9.09','v2026.9.9',' 2026.9.9','2026.9.9\n','2026.9','2026.9.9.0','2026.9.9+','2026.9.9+a..b','2026.9.9+a_b','9007199254740992.0.0'];
+ for(const version of rejected){let called=false;assert.throws(()=>plugin.register({runtime:{version},registerWebSearchProvider(){called=true;}}));assert.equal(called,false);}
+ for(const version of accepted){let registered;plugin.register({runtime:{version},registerWebSearchProvider(p){registered=p;}});assert.equal(registered.id,'custom-codex-search');assert.equal(typeof registered.createTool({config:{}}).execute,'function');for(const value of [undefined,null,{},true])assert.throws(()=>plugin.register({runtime:{version},registerWebSearchProvider:value}));}
+ assert.throws(()=>plugin.register({registerWebSearchProvider(){}}));assert.throws(()=>plugin.register({}));
+});
 
 test('uppercase and network-path URLs share retained budget in every displayed section',()=>{
  const links='[upper](HTTPS://second.example/source) [network](//third.example/source) bare HTTPS://fourth.example/source //fifth.example/source';

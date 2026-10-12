@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Permit stable OpenClaw >=2026.9.9 with valid build metadata, excluding prereleases; retain required registration API checks and all security/auth behavior. Future releases are permitted, not certified; integration baseline remains 2026.9.9.
+
 ## 0.1.3
 
 - Support reviewed OpenClaw 2026.9.9 provider registration and execution interfaces; preserve exact host-version compatibility and all authentication, isolation, and evidence checks.

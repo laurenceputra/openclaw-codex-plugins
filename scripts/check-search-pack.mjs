@@ -21,10 +21,11 @@ try {
   assert.equal(packs.length, 1);
   const [pack] = packs;
   assert.equal(pack.name, 'custom-codex-search');
-  assert.equal(pack.version, '0.2.1');
+  assert.equal(pack.version, '0.2.2');
   assert.deepEqual(pack.files.map(f => f.path).sort(), expected);
   execFileSync('tar', ['-xzf', join(temp, pack.filename), '-C', temp]);
   const extracted = join(temp, 'package');
+  assert.equal(JSON.parse(readFileSync(join(extracted, 'package.json'), 'utf8')).peerDependencies.openclaw, '>=2026.9.9');
   for (const path of expected) {
     const content = readFileSync(join(extracted, path));
     assert.deepEqual(content, readFileSync(join(source, path)), 'Packed bytes differ: ' + path);

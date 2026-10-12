@@ -5,8 +5,8 @@ This private npm workspace is a repository container, not an installable plugin.
 
 ## Packages
 
-- [custom-codex-search](packages/custom-codex-search/README.md): reviewed version 0.2.1, retaining npm name and plugin ID custom-codex-search. See its README for host compatibility and configuration.
-- [custom-codex-fetch](packages/custom-codex-fetch/README.md): experimental version 0.1.3; independently packaged HTTP-first fetch fallback.
+- [custom-codex-search](packages/custom-codex-search/README.md): reviewed version 0.2.2, retaining npm name and plugin ID custom-codex-search. See its README for host compatibility and configuration.
+- [custom-codex-fetch](packages/custom-codex-fetch/README.md): experimental version 0.1.4; independently packaged HTTP-first fetch fallback.
 
 ## Test and package search
 

@@ -2,6 +2,10 @@
 
 Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.9 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
 
+## Host compatibility
+
+Host peer and runtime gates permit stable SemVer **>=2026.9.9**, including valid build metadata; prereleases are excluded. Untested future releases are permitted, not certified. Integration evidence and installed-host fixtures remain pinned to 2026.9.9. Required registration APIs must still exist; version acceptance does not guarantee future SDK/auth/protocol compatibility.
+
 ## Routing and recommended operator selection
 
 OpenClaw remains HTTP-first. With readability enabled, successful HTML readability extraction bypasses the native provider. Empty readability extraction or HTTP failures can invoke the selected native fallback; the tested host can use basic HTML cleanup if that fallback fails. JSON, markdown and plain text HTTP responses can bypass the provider. SSRF blocks and caller cancellation must not invoke it.
