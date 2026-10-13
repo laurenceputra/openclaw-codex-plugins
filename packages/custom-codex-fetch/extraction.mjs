@@ -8,7 +8,7 @@ export function normalizationFailureReason(error){
  return normalizationReasons.get(error) ?? 'normalization-internal-error';
 }
 export const EXTRACTOR='codex-native-agent-extraction';
-export const LABEL='Best-effort native agent extraction; unverified per request, not raw or complete origin response. Origin HTTP status and redirects unknown; completeness unknown.';
+export const LABEL='Model-generated page synthesis based on limited native page evidence; paraphrase and brief quotations are identified in the text. Not verbatim extraction or the full page body. Origin HTTP status and redirects unknown; completeness unknown.';
 export function validateUrl(value){
  if(typeof value!=='string'||value.length>2048)throw new Error('Invalid URL');
  const u=new URL(value);
@@ -18,7 +18,11 @@ export function validateUrl(value){
 }
 export function normalizeExtraction(items,url,{maxChars=50000,extractMode='markdown',started=Date.now()}={}){
  const opens=items.filter(i=>i.type==='webSearch');
- if(opens.length!==1||opens[0].action?.type!=='openPage')rejectNormalization('missing-native-open');
+ if(opens.length>2)rejectNormalization('multiple-native-web-actions');
+ if(opens.length===1&&opens[0].action?.type!=='openPage')rejectNormalization('missing-native-open');
+ if(opens.length>1&&opens.some(i=>i.action?.type!=='openPage'||i.action.url!==url))rejectNormalization('multiple-native-web-actions');
+ if(opens.length===1&&opens[0].action?.type==='openPage'&&opens[0].action.url!==url)rejectNormalization('url-mismatch');
+ if(opens.length<1)rejectNormalization('missing-native-open');
  if(opens[0].action.url!==url)rejectNormalization('url-mismatch');
  if((opens[0].status&&opens[0].status!=='completed')||opens[0].error)rejectNormalization('native-open-failed');
  const finals=items.filter(i=>i.type==='agentMessage'&&i.phase==='final_answer');

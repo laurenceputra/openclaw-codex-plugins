@@ -1,4 +1,4 @@
-# custom-codex-fetch 0.1.3
+# custom-codex-fetch 0.1.5
 
 Experimental independent ordinary web_fetch fallback, tested with OpenClaw 2026.9.9 and Codex 0.158.0. Explicit selection only; no separate custom tool or core changes.
 
@@ -18,7 +18,7 @@ The recommended reliability-oriented selection below matches the deployment vali
     "web": {
       "fetch": {
         "provider": "custom-codex-fetch",
-        "readability": true,
+        "readability": false,
         "cacheTtlMinutes": 0
       }
     }
@@ -26,7 +26,7 @@ The recommended reliability-oriented selection below matches the deployment vali
 }
 ~~~
 
-The previous readability=false selection required native extraction for HTTP HTML. Readability-first improves ordinary retrieval but does not fix hosted native failures. Readability does not execute JavaScript and may omit headings, navigation or other page content. A successful ordinary web_fetch can therefore say nothing about native availability.
+A readability=false selection routes ordinary HTTP HTML to the provider fallback on the tested host; it does not bypass the host HTTP-first handling for JSON, markdown, and plain-text responses, nor establish provider use for all resources. SSRF blocks and cancellation still stop before fallback. This is a constrained route selection, not a universal Codex-for-every-fetch guarantee.
 
 Fetch cacheTtlMinutes=0 bypasses local cache reads and writes on both HTTP and native-fallback routes. It does not control upstream caches or alter search caching. Provider resolution can be lazy; a startup status of unloaded alone is not proof that the selected provider is inactive.
 
@@ -34,7 +34,7 @@ Fetch cacheTtlMinutes=0 bypasses local cache reads and writes on both HTTP and n
 
 Plugin settings require owner agentDir, exact existing OAuth profileId and absolute binaryPath. Resolve these dynamically from the owner's authorized current configuration; no private owner paths or credentials are packaged. No new authentication or API-key fallback occurs. Model and reasoning effort are configurable; defaults remain gpt-6-sol and low. Model must be a nonempty string (trimmed at runtime). Effort must be one of none, minimal, low, medium, high, xhigh, max, ultra (plugin allowlist; the Codex 0.158.0 schema accepts nonempty effort strings, but authenticated catalog compatibility is still required). The authenticated native catalog must explicitly list the selected model with text input and selected effort; exact model, OpenAI provider and effort thread acknowledgments are mandatory. No fallback or inferred support: gpt-6.1 is rejected when absent from that catalog. Alternate-model tests use mocks, not evidence of live availability. Manifest UI hints describe these selectors; rendered UI is not verified. Defaults: timeoutMs 90000 (including authentication), startupMs 15000 within it, cleanupMs 5000 additional. At most two workers run concurrently; excess requests fail without retry.
 
-A successful nonce-backed feasibility probe established the retrieval path, not verification of every future extraction. Results are best-effort native agent text, not raw/complete origin responses. Each text starts with an essential limitation label. Status is always 0 (unknown origin HTTP status), finalUrl is the provider input URL (not a verified redirect destination), rawLength measures extracted characters, and truncated is true because completeness is unknown. MIME/title are omitted. Failed or ambiguous output, missing exact completed native open, empty chunks, model rerouting and native application retries fail closed. Only one final_answer JSON message is parsed; commentary and reasoning never become page text. Both text and markdown request faithful chunks, never summaries.
+A successful nonce-backed feasibility probe established the retrieval path, not verification of every future extraction. Results are explicitly labeled model-generated page synthesis, not verbatim extraction or full body. The model gives a substantive overview grounded in the page, with short exact quotations distinct from paraphrase. At most two opens of the same exact requested URL are allowed; search, unrelated URLs, and link-following are forbidden. Limited quotes/truncation are nonfatal limitations; inaccessible or insufficient evidence fails closed. Each text starts with an essential limitation label. Status is always 0 (unknown origin HTTP status), finalUrl is the provider input URL (not a verified redirect destination), rawLength measures extracted characters, and truncated is true because completeness is unknown. MIME/title are omitted. Failed or ambiguous output, missing exact completed native open, empty chunks, model rerouting and native application retries fail closed. Only one final_answer JSON message is parsed; commentary and reasoning never become page text. Text and markdown request a grounded page overview with brief, clearly identified quotations and paraphrases; neither is a verbatim/full-body extraction.
 
 The native structured outputSchema contract is supported by the pinned binary. The fixed developer instructions contain no fixture answer or nonce. A completed native action proves targeting, not independent body verification. Labels persist in runtime output; host normalization may add untrusted wrappers and spill the bounded available extraction. Character budgets below 1536 fail before authentication or worker startup; undersized extraction budgets fail rather than suppress required labels.
 

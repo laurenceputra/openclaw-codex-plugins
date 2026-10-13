@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Return explicitly labeled model-generated grounded page overviews with short quotations and paraphrases, not verbatim/full-body extraction. Permit at most two exact-URL opens; forbid search/unrelated URLs. Treat limited quotations as nonfatal and inaccessible/insufficient evidence as failure.
+
+
 ## 0.1.4
 
 - Permit stable OpenClaw >=2026.9.9 with valid build metadata, excluding prereleases; retain required registration API checks and all security/auth behavior. Future releases are permitted, not certified; integration baseline remains 2026.9.9.

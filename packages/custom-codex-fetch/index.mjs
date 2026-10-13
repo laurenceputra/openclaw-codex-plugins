@@ -14,6 +14,6 @@ export function descriptor(resolveConfig) {
   return { id:'custom-codex-fetch',label:'Custom Codex Fetch',hint:'Isolated web-only native Sol extraction worker; existing locked OpenAI subscription profile',requiresCredential:false,
     envVars:[],placeholder:'Uses configured locked profile',signupUrl:'https://chatgpt.com/codex',credentialPath:'',inactiveSecretPaths:[],configPath:[],
     getCredentialValue:()=>undefined,setCredentialValue:()=>{},
-    createTool:ctx=>({description:'Best-effort native extraction of requested public page; origin status unknown.',execute:(args,context)=>fetchPage(resolveConfig(),ctx.config,args,context)}) };
+    createTool:ctx=>({description:'Model-generated overview with brief quotations based on the requested page; not verbatim or full-body extraction. Origin status unknown.',execute:(args,context)=>fetchPage(resolveConfig(),ctx.config,args,context)}) };
 }
 export default {id:'custom-codex-fetch',name:'Custom Codex Fetch',register(api){if(!supportsHost(api.runtime?.version)||typeof api.registerWebFetchProvider!=='function')throw new Error('Incompatible OpenClaw web fetch API');api.registerWebFetchProvider(descriptor(()=>api.pluginConfig));}};
