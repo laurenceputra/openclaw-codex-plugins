@@ -21,11 +21,25 @@ Preserve existing agentDir, profileId, binaryPath and timeout settings. Add opti
       snippetChars: 1500, summaryChars: 24000
     }
 
-Select tools.web.search.provider = "custom-codex-search" after review. Plugin manifest JSON Schema supplies Settings fields; descriptor configPath: [] selects this plugin's config root on Search inline settings (supported host contract). No custom UI. Paths are explicit generic operator inputs, not discovered private directories. Select a trusted directly executable native Codex binary of the tested version; verify its version yourself. The binary is spawned directly with fixed argument arrays, never through a shell.
+Select tools.web.search.provider = "custom-codex-search" after review. Plugin manifest JSON Schema supplies Settings fields; descriptor configPath: [] selects this plugin's config root on Search inline settings (supported host contract). No custom UI. Paths are explicit generic operator inputs, not discovered private directories. Select a trusted directly executable official Codex binary or executable launcher; verify the resolved version yourself. The binary is spawned directly with fixed argument arrays, never through a shell.
 
 Count defaults to 5, range 1–10. It limits unique retained source entries and aligned citations, not native operations. Substantive snippets take priority, then metadata URL inventory, then clearly unverified generated candidates. Fewer sources are allowed and no padding is performed. Other literal source URLs in generated summary and snippets are omitted. Native snippets are labeled search-snippets only; metadata Total lines is URL provenance, not facts. Native targeting does not prove page retrieval. Generated claims require source-check. Outputs are untrusted-wrapped.
 
 snippetChars: 100–8000 per snippet; summaryChars: 100–48000 for generated summary. Both payload limits apply after URL scrubbing. Truncation is explicitly labeled; each truncated section’s marker adds 20 characters outside its payload limit. Fixed evidence scaffolding and retained title/URL fields are additional bounded output. Total timeout includes auth through turn: 1–300s; startup 0.1–60s, never above total; cleanup/reap adds 0.1–10s. Defaults remain 90s/15s/5s.
+
+## Upgrade-safe Codex launcher selection
+
+`binaryPath` accepts an absolute path to a trusted official executable Codex launcher as well as a native binary. For example, on the observed bundled-host installation:
+
+~~~json
+{ "binaryPath": "/app/dist/extensions/codex/node_modules/@openai/codex/bin/codex.js" }
+~~~
+
+This is a packaging-specific example, not a portable default or automatic resolver. Verify that the path exists, is executable and belongs to the intended official Codex installation. This JavaScript launcher requires `node` on the Gateway process's `PATH`. Prefer the stable package launcher over a version-pinned `.pnpm/...@<version>/...` native binary path, which can disappear when the host replaces its dependencies. The launcher follows the Codex bundled with that host installation; it is not an independent Codex auto-updater.
+
+The plugin spawns the configured executable directly, without a shell, passing fixed policy arguments followed by `app-server --listen stdio://`. A launcher must forward those arguments and preserve stdio and process lifecycle behavior. The child receives only inherited `PATH` plus isolated `HOME`, `CODEX_HOME` and `TMPDIR`; launchers requiring other inherited environment variables are not supported by this configuration alone. Selecting a launcher does not relax authentication, isolation or protocol checks.
+
+Observed validation on **2026-11-04 UTC** with OpenClaw **2026.10.10** and bundled Codex **0.164.0** passed full direct search/native-fetch checks and live search. The original OpenClaw **2026.9.9** / Codex **0.158.0** fixture baseline remains unchanged. This observation is not a guarantee of future SDK/auth/protocol compatibility. After each host upgrade, verify the launcher path and resolved Codex version, then recheck search and native-fetch behavior before relying on it. This guidance documents an existing configuration option only; no runtime, default resolver or package version changes are included.
 
 ## Isolation and constraints
 

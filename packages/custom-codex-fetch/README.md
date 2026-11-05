@@ -30,6 +30,20 @@ A readability=false selection routes ordinary HTTP HTML to the provider fallback
 
 Fetch cacheTtlMinutes=0 bypasses local cache reads and writes on both HTTP and native-fallback routes. It does not control upstream caches or alter search caching. Provider resolution can be lazy; a startup status of unloaded alone is not proof that the selected provider is inactive.
 
+## Upgrade-safe Codex launcher selection
+
+`binaryPath` accepts an absolute path to a trusted official executable Codex launcher as well as a native binary. For example, on the observed bundled-host installation:
+
+~~~json
+{ "binaryPath": "/app/dist/extensions/codex/node_modules/@openai/codex/bin/codex.js" }
+~~~
+
+This is a packaging-specific example, not a portable default or automatic resolver. Verify that the path exists, is executable and belongs to the intended official Codex installation. This JavaScript launcher requires `node` on the Gateway process's `PATH`. Prefer the stable package launcher over a version-pinned `.pnpm/...@<version>/...` native binary path, which can disappear when the host replaces its dependencies. The launcher follows the Codex bundled with that host installation; it is not an independent Codex auto-updater.
+
+The plugin spawns the configured executable directly, without a shell, passing fixed policy arguments followed by `app-server --listen stdio://`. A launcher must forward those arguments and preserve stdio and process lifecycle behavior. The child receives only inherited `PATH` plus isolated `HOME`, `CODEX_HOME` and `TMPDIR`; launchers requiring other inherited environment variables are not supported by this configuration alone. Selecting a launcher does not relax authentication, isolation or protocol checks.
+
+Observed validation on **2026-11-04 UTC** with OpenClaw **2026.10.10** and bundled Codex **0.164.0** passed full direct search/native-fetch checks and live search. The original OpenClaw **2026.9.9** / Codex **0.158.0** fixture baseline remains unchanged. This observation is not a guarantee of future SDK/auth/protocol compatibility. After each host upgrade, verify the launcher path and resolved Codex version, then recheck search and native-fetch behavior before relying on it. This guidance documents an existing configuration option only; no runtime, default resolver or package version changes are included.
+
 ## Native configuration and boundaries
 
 Plugin settings require owner agentDir, exact existing OAuth profileId and absolute binaryPath. Resolve these dynamically from the owner's authorized current configuration; no private owner paths or credentials are packaged. No new authentication or API-key fallback occurs. Model and reasoning effort are configurable; defaults remain gpt-6-sol and low. Model must be a nonempty string (trimmed at runtime). Effort must be one of none, minimal, low, medium, high, xhigh, max, ultra (plugin allowlist; the Codex 0.158.0 schema accepts nonempty effort strings, but authenticated catalog compatibility is still required). The authenticated native catalog must explicitly list the selected model with text input and selected effort; exact model, OpenAI provider and effort thread acknowledgments are mandatory. No fallback or inferred support: gpt-6.1 is rejected when absent from that catalog. Alternate-model tests use mocks, not evidence of live availability. Manifest UI hints describe these selectors; rendered UI is not verified. Defaults: timeoutMs 90000 (including authentication), startupMs 15000 within it, cleanupMs 5000 additional. At most two workers run concurrently; excess requests fail without retry.

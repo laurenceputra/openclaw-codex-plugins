@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Documentation only: explain trusted executable launcher selection, packaging-specific bundled-host paths, upgrade verification and observed 2026-11-04 compatibility; retain the original fixture baseline. No runtime, resolver or version changes.
+
 ## 0.2.2
 
 - Permit stable OpenClaw >=2026.9.9 with valid build metadata, excluding prereleases; retain required registration API checks and all security/auth behavior. Future releases are permitted, not certified; integration baseline remains 2026.9.9.

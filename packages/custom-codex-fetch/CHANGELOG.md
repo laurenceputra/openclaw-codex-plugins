@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Documentation only: explain trusted executable launcher selection, packaging-specific bundled-host paths, upgrade verification and observed 2026-11-04 compatibility; retain the original fixture baseline. No runtime, resolver or version changes.
+
 ## 0.1.5
 
 - Return explicitly labeled model-generated grounded page overviews with short quotations and paraphrases, not verbatim/full-body extraction. Permit at most two exact-URL opens; forbid search/unrelated URLs. Treat limited quotations as nonfatal and inaccessible/insufficient evidence as failure.
